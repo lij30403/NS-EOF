@@ -6,7 +6,14 @@
 #include "Simulation.hpp"
 
 
+
+
 #include "ParallelManagers/PetscParallelConfiguration.hpp"
+
+
+#include <cfenv>
+#include <iostream>
+#pragma STDC FENV_ACCESS ON;
 
 int main(int argc, char* argv[]) {
   spdlog::set_level(spdlog::level::info);
@@ -19,6 +26,7 @@ int main(int argc, char* argv[]) {
   PetscInitialize(&argc, &argv, "petsc_commandline_arg", PETSC_NULLPTR);
 #else
   MPI_Init(&argc, &argv);
+  feenableexcept(FE_DIVBYZERO | FE_INVALID | FE_OVERFLOW);
 #endif
 
   MPI_Comm_size(PETSC_COMM_WORLD, &nproc);

@@ -109,11 +109,34 @@ void Simulation::setTimeStep() {
   maxUStencil_.reset();
   maxUFieldIterator_.iterate();
   maxUBoundaryIterator_.iterate();
+
+
+  RealType maxU1 = maxUStencil_.getMaxValues()[1];
+
+  RealType maxU0 = maxUStencil_.getMaxValues()[0];
+
+  RealType maxU2 = maxUStencil_.getMaxValues()[2];
+
+  
+
+  if (maxU1 < MY_FLOAT_MIN){
+    maxU1 = 0.5;
+  }
+
+  if (maxU0 < MY_FLOAT_MIN){
+    maxU0 = 0.5;
+  }
+
+  if (maxU2 < MY_FLOAT_MIN){
+      maxU2 = 0.5;
+    }
+
+
   if (parameters_.geometry.dim == 3) {
     factor += 1.0 / (parameters_.meshsize->getDzMin() * parameters_.meshsize->getDzMin());
-    parameters_.timestep.dt = 1.0 / (maxUStencil_.getMaxValues()[2]);
+    parameters_.timestep.dt = 1.0 / (maxU2);
   } else {
-    parameters_.timestep.dt = 1.0 / (maxUStencil_.getMaxValues()[0]);
+    parameters_.timestep.dt = 1.0 / (maxU0);
   }
 
   // localMin = std::min(parameters_.timestep.dt, std::min(std::min(parameters_.flow.Re/(2 * factor), 1.0 /
@@ -121,7 +144,7 @@ void Simulation::setTimeStep() {
   localMin = std::min(
     parameters_.flow.Re / (2 * factor),
     std::min(
-      parameters_.timestep.dt, std::min(1 / (maxUStencil_.getMaxValues()[0]), 1 / (maxUStencil_.getMaxValues()[1]))
+      parameters_.timestep.dt, std::min(1 / (maxU0), 1 / (maxU1))
     )
   );
 
