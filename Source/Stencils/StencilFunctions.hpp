@@ -95,7 +95,9 @@ namespace Stencils {
     const int index_x0 = mapd(0, 0, 0, 0); // x at center
     const int index_x1 = mapd(-1, 0, 0, 0); // x at left
     const int index_x2 = mapd(1, 0, 0, 0);  // x at right
-    return 2*((lv[index_u2])/(lm[index_x2] * (lm[index_x2] + lm[index_x0]))-(lv[index_u0])/(lm[index_x0] * lm[index_x2])+(lv[index_u1])/(lm[index_x0]*(lm[index_x0]+lm[index_x2])));
+    return 2*((lv[index_u2])/(lm[index_x2] * (lm[index_x2] + lm[index_x0]))
+    -(lv[index_u0])/(lm[index_x0] * lm[index_x2])
+    +(lv[index_u1])/(lm[index_x0]*(lm[index_x0]+lm[index_x2])));
     //return (lv[index2] - 2 * lv[index0] + lv[index1]) / (lm[index00] * lm[index00]);
   }
 
@@ -740,7 +742,7 @@ namespace Stencils {
     RealType viscousTermV = d2vdy2(localVelocity, localMeshsize); // d²v/dy²
     RealType viscousTermW = d2vdz2(localVelocity, localMeshsize); // d²v/dz²
     return localVelocity[mapd(0, 0, 0, 1)]
-        + dt * (-dv2dy(localVelocity, parameters, localMeshsize) 
+        + dt * (-dSv2dy(localVelocity, parameters, localMeshsize) 
                 - duvdx(localVelocity, parameters, localMeshsize)
                 - dvwdz(localVelocity, parameters, localMeshsize) 
                 + 1/parameters.flow.Re*(viscousTermU + viscousTermV + viscousTermW)
